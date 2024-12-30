@@ -38,7 +38,7 @@ Now that the index is create run the `random.sh` script to start send `http` req
 
 
 
-Data should be following into your quickwit instance. All that is left is creating the data-source in the grafana.
+Data should be flowing into your quickwit instance. All that is left is creating the data-source in the grafana.
 
 Please follow quickwit's official [instructions](https://quickwit.io/docs/get-started/tutorials/trace-analytics-with-grafana) for that step
 
