@@ -1,0 +1,18 @@
+version: 0.7
+index_id: test-schemaless
+doc_mapping:
+  mode: dynamic
+  field_mappings:
+    - name: timestamp
+      type: datetime
+      input_formats:
+        - unix_timestamp
+      output_format: unix_timestamp_nanos
+      fast_precision: milliseconds
+      fast: true
+  timestamp_field: timestamp
+indexing_settings:
+  commit_timeout_secs: 30
+retention:
+  period: 5 days
+  schedule: daily

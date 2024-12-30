@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  quickwit:
+    image: quickwit/quickwit:qw-matterlabs-20240903
+    container_name: quickwit-container
+    ports:
+      - "7280:7280"
+    command: ["run"]
+  nginx:
+    container_name: nginx-container
+    build:
+      context: nginx
+      dockerfile: Nginx.Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - service-network
+  grafana:
+    image: grafana/grafana-oss:11.4.0
+    container_name: grafana-container
+    ports:
+      - "${MAP_HOST_GRAFANA:-127.0.0.1}:3000:3000"
+    environment:
+      GF_INSTALL_PLUGINS: https://github.com/quickwit-oss/quickwit-datasource/releases/download/v0.4.6/quickwit-quickwit-datasource-0.4.6.zip;quickwit-quickwit-datasource
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    networks:
+      - service-network
+
+networks:
+  service-network:
+    driver: bridge

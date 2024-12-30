@@ -1,0 +1,16 @@
+/var/log/nginx/custom_access.log {
+    missingok
+    notifempty
+    create 0644 www-data root
+    postrotate
+        echo "posting data to quickwit" >> /var/log/cron.log
+        curl -X POST \
+            -H 'Content-Type: application/json' \
+            "http://$(ip route | awk '/default/ { print $3 }'):7280/api/v1/test-schemaless/ingest?commit=force" \
+            --data-binary @/var/log/nginx/custom_access.log.1
+
+        echo "time to tell nginx to reload the log file" >> /var/log/cron.log
+        kill -USR1 `cat /var/run/nginx.pid` # Tells nginx to reload log file
+        echo "done working with nginx... see ya" >> /var/log/cron.log
+    endscript
+}
